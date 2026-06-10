@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Tuple
-
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -18,7 +16,11 @@ def load_dataset(csv_path: str | Path) -> pd.DataFrame:
 
 
 def preprocess_dataframe(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
-    """Clean and encode churn dataframe into model-ready features and labels."""
+    """Clean and encode churn dataframe into model-ready features and labels.
+
+    Numeric missing values are filled with the median, and categorical missing values are
+    filled with the column mode (or ``"Unknown"`` when no mode is available).
+    """
     data = df.copy()
 
     if "customerID" in data.columns:
@@ -53,7 +55,7 @@ def split_data(
     y: pd.Series,
     test_size: float = 0.2,
     random_state: int = 42,
-) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """Split processed data into train and test sets."""
     return train_test_split(
         x,
@@ -68,7 +70,7 @@ def preprocess_and_split(
     csv_path: str | Path,
     test_size: float = 0.2,
     random_state: int = 42,
-) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """Load, preprocess, and split Telco churn dataset."""
     df = load_dataset(csv_path)
     x, y = preprocess_dataframe(df)
